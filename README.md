@@ -1,65 +1,143 @@
-<p align="center"><a href="https://laravel.com" target="_blank"><img src="https://raw.githubusercontent.com/laravel/art/master/logo-lockup/5%20SVG/2%20CMYK/1%20Full%20Color/laravel-logolockup-cmyk-red.svg" width="400" alt="Laravel Logo"></a></p>
+# Test Management App
 
-<p align="center">
-<a href="https://github.com/laravel/framework/actions"><img src="https://github.com/laravel/framework/workflows/tests/badge.svg" alt="Build Status"></a>
-<a href="https://packagist.org/packages/laravel/framework"><img src="https://img.shields.io/packagist/dt/laravel/framework" alt="Total Downloads"></a>
-<a href="https://packagist.org/packages/laravel/framework"><img src="https://img.shields.io/packagist/v/laravel/framework" alt="Latest Stable Version"></a>
-<a href="https://packagist.org/packages/laravel/framework"><img src="https://img.shields.io/packagist/l/laravel/framework" alt="License"></a>
-</p>
+## Overview
 
-## About Laravel
+The Test Management App is a web application built with Laravel that allows users to manage tests. 
+The goal of this project is to create a REST API for creating, editing, deleting, and viewing tests.
 
-Laravel is a web application framework with expressive, elegant syntax. We believe development must be an enjoyable and creative experience to be truly fulfilling. Laravel takes the pain out of development by easing common tasks used in many web projects, such as:
+## Features
+- 2 User roles: admin and manager
+- User Authentication (Laravel Breeze)
+- Create, Edit, Delete, and View actions for User, Test entities
+- Authorization using policies with roles and permissions. I.e. managers can only update their tests
+- Services and repositories as additional layers to fetch data from storage
+- TDD (PHPUnit tests covered API and services)
 
-- [Simple, fast routing engine](https://laravel.com/docs/routing).
-- [Powerful dependency injection container](https://laravel.com/docs/container).
-- Multiple back-ends for [session](https://laravel.com/docs/session) and [cache](https://laravel.com/docs/cache) storage.
-- Expressive, intuitive [database ORM](https://laravel.com/docs/eloquent).
-- Database agnostic [schema migrations](https://laravel.com/docs/migrations).
-- [Robust background job processing](https://laravel.com/docs/queues).
-- [Real-time event broadcasting](https://laravel.com/docs/broadcasting).
+## Installation and Setup
 
-Laravel is accessible, powerful, and provides tools required for large, robust applications.
+1. Requirements
+   <br><br>
+   Before starting work on the project, ensure that you have the following components installed:
+    - PHP
+    - Composer
+    - nginx or apache (or use built-in Laravel server)
+    - MySQL
+    - Laravel
+2. Clone the repository to your local machine:
+   ```shell
+   git clone https://github.com/aghorianducalis/task-management-app.git
+   cd task-management-app
+   ```
+3. Set up environment:
+   <br><br>
+   Copy the `.env.example` to `.env` and set the environment values.
 
-## Learning Laravel
+   Configure database access and other necessary parameters. Set up your database in the `.env` file:
+   ```shell
+   DB_CONNECTION=mysql
+   DB_HOST=127.0.0.1
+   DB_PORT=3306
+   DB_DATABASE=your_database_name
+   DB_USERNAME=your_database_username
+   DB_PASSWORD=your_database_password
+   ```
 
-Laravel has the most extensive and thorough [documentation](https://laravel.com/docs) and video tutorial library of all modern web application frameworks, making it a breeze to get started with the framework.
+4. Install composer dependencies:
+    ```shell
+    composer install
+    ```
+5. Run Laravel setup commands via artisan. I.e. generate an application key:
+    ```shell
+    php artisan key:generate
+    php artisan storage:link
+    ```
+   
+6. Run database migrations:
+    ```shell
+    php artisan migrate
+    ```
 
-You may also try the [Laravel Bootcamp](https://bootcamp.laravel.com), where you will be guided through building a modern Laravel application from scratch.
+7. Run the seeders:
+   ```shell
+   php artisan migrate:refresh --seed
+   ```
+   Run the seeder for roles and permissions:
+   ```shell
+   php artisan roles-permissions:sync
+   ```
 
-If you don't feel like reading, [Laracasts](https://laracasts.com) can help. Laracasts contains over 2000 video tutorials on a range of topics including Laravel, modern PHP, unit testing, and JavaScript. Boost your skills by digging into our comprehensive video library.
+8. Start the development server:
+   ```shell
+   php artisan serve
+   ```
 
-## Laravel Sponsors
+Now, you can open a web browser and navigate to http://localhost:8000 to view your project.
 
-We would like to extend our thanks to the following sponsors for funding Laravel development. If you are interested in becoming a sponsor, please visit the [Laravel Partners program](https://partners.laravel.com).
 
-### Premium Partners
+## Usage
 
-- **[Vehikl](https://vehikl.com/)**
-- **[Tighten Co.](https://tighten.co)**
-- **[WebReinvent](https://webreinvent.com/)**
-- **[Kirschbaum Development Group](https://kirschbaumdevelopment.com)**
-- **[64 Robots](https://64robots.com)**
-- **[Curotec](https://www.curotec.com/services/technologies/laravel/)**
-- **[Cyber-Duck](https://cyber-duck.co.uk)**
-- **[DevSquad](https://devsquad.com/hire-laravel-developers)**
-- **[Jump24](https://jump24.co.uk)**
-- **[Redberry](https://redberry.international/laravel/)**
-- **[Active Logic](https://activelogic.com)**
-- **[byte5](https://byte5.de)**
-- **[OP.GG](https://op.gg)**
+Once you have started the Artisan development server, your application will be accessible in your web browser at http://localhost:8000.
 
-## Contributing
+After installing and configuring the project, you can:
 
-Thank you for considering contributing to the Laravel framework! The contribution guide can be found in the [Laravel documentation](https://laravel.com/docs/contributions).
+Register, log in, and log out.
 
-## Code of Conduct
+## Authentication
 
-In order to ensure that the Laravel community is welcoming to all, please review and abide by the [Code of Conduct](https://laravel.com/docs/contributions#code-of-conduct).
+The Test Management System includes user registration and authentication. Users can sign up, log in, and log out. Only authenticated users can create, edit, delete, and view their tests.
+
+## Testing
+
+The application includes PHPUnit tests to ensure functionality and authorization are working as expected. Run the tests with the following command:
+   ```shell
+   php artisan test
+   ```
+
+## Structure
+
+### Roles and permissions
+
+#### Package
+We are utilizing a spatie/laravel-permission package that provides role and permission management.
+Documantation: https://spatie.be/docs/laravel-permission/v5/basic-usage/basic-usage
+
+#### Usage
+
+A role has a set of permissions associated with it.
+
+Every action is authorized through a permission (via role).
+
+Roles and permissions are seeded into the database using seeder and/or a specific command. Their values are hardcoded.
+
+When the values are updated, a command is executed.
+
+There are no routes available for creating, editing, or deleting roles and permissions.
+
+When creating a user, a role is assigned to them. In the UserService::create() method, the passed role is determined by the $data parameter, defaulting to 'admin'.
+
+There are two roles: admin and manager.
+
+#### Admin
+Can perform all actions on User and Test entities.
+Has access to routes related to users. For example, the admin can see a list of all users.
+Has access to create, edit, or delete tests.
+
+#### Manager
+Utilizes the system and can access routes for viewing tests.
+Has access only to their own test. For instance, the list of tests for a manager is limited to their own tests using appropriate filtering.
+Can only edit the rate of their own tests.
+
+### Authorization
+Authorization is built on the use of roles and permissions. Authorization of actions through API routes is contained in the policy. Obtaining an authorized user and additional logic related to the user's role is contained in the controller. Then the controller delegates the execution of the logic to the corresponding service, passing to its method data specific to a particular user.
+
+### Services and repositories
+- Repositories only perform actions on corresponding entity. That means not related entities. I.e. UserRepository::delete() removes only User. Related Test are removed in their own repositories. Appropriate calls are done within service.
+  <br>
+- Services do not contain the auth logic. They act on User like abstract User. Authenticated User is retrieved on higher level (i. e. in controller or command). For example, controller gets the auth User and pass it as a parameter into the service.
 
 ## Security Vulnerabilities
 
-If you discover a security vulnerability within Laravel, please send an e-mail to Taylor Otwell via [taylor@laravel.com](mailto:taylor@laravel.com). All security vulnerabilities will be promptly addressed.
+If you discover a security vulnerability within application, please send an e-mail to developer via [aghorianducalis@gmail.com](mailto:aghorianducalis@gmail.com). All security vulnerabilities will be promptly addressed.
 
 ## License
 
